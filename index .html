@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Amanas Quantum</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      color: white;
+      background: #050816;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=1920&q=80') no-repeat center center/cover;
+      z-index: -3;
+      filter: brightness(0.35);
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at center, rgba(10, 20, 50, 0.25), rgba(0, 0, 0, 0.82));
+      z-index: -2;
+    }
+
+    .header {
+      width: 100%;
+      padding: 20px 50px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: fixed;
+      top: 0;
+      z-index: 1000;
+      background: rgba(0, 0, 0, 0.25);
+      backdrop-filter: blur(8px);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-icon {
+      font-size: 28px;
+      color: #00e5ff;
+      text-shadow: 0 0 10px #00e5ff;
+    }
+
+    .logo-text {
+      font-size: 24px;
+      font-weight: bold;
+      color: #ffffff;
+      letter-spacing: 1px;
+    }
+
+    .navbar {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .navbar a, .navbar button {
+      color: white;
+      text-decoration: none;
+      font-size: 16px;
+      transition: 0.3s;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+
+    .navbar a:hover, .navbar button:hover {
+      color: #00e5ff;
+    }
+
+    .btn {
+      padding: 10px 18px;
+      border-radius: 30px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: 0.3s ease;
+      display: inline-block;
+      cursor: pointer;
+      border: none;
+    }
+
+    .login-btn {
+      border: 1px solid #00e5ff;
+      color: #00e5ff;
+      background: transparent;
+    }
+
+    .login-btn:hover {
+      background: #00e5ff;
+      color: black;
+    }
+
+    .register-btn {
+      background: linear-gradient(45deg, #00e5ff, #7c4dff);
+      color: white;
+    }
+
+    .register-btn:hover {
+      transform: scale(1.05);
+    }
+
+    .primary-btn {
+      background: linear-gradient(45deg, #00e5ff, #7c4dff);
+      color: white;
+      box-shadow: 0 0 20px rgba(0, 229, 255, 0.4);
+    }
+
+    .secondary-btn {
+      border: 1px solid #ffffff;
+      color: white;
+      background: transparent;
+    }
+
+    .secondary-btn:hover {
+      background: white;
+      color: black;
+    }
+
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 120px 60px 60px;
+      position: relative;
+      gap: 40px;
+    }
+
+    .hero-content {
+      max-width: 650px;
+      z-index: 2;
+    }
+
+    .hero-content h1 {
+      font-size: 64px;
+      line-height: 1.1;
+      margin-bottom: 20px;
+      color: white;
+      text-transform: uppercase;
+      text-shadow: 0 0 20px rgba(255,255,255,0.15);
+    }
+
+    .hero-content p {
+      font-size: 18px;
+      line-height: 1.7;
+      margin-bottom: 30px;
+      color: #d9e6ff;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .atom-animation {
+      position: relative;
+      width: 350px;
+      height: 350px;
+      margin-right: 40px;
+    }
+
+    .nucleus {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      background: #00e5ff;
+      border-radius: 50%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 25px #00e5ff, 0 0 50px #7c4dff;
+    }
+
+    .orbit {
+      position: absolute;
+      border: 2px solid rgba(255, 255, 255, 0.25);
+      border-radius: 50%;
+      top: 50%;
+      left: 50%;
+    }
+
+    .orbit1 {
+      width: 250px;
+      height: 100px;
+      transform: translate(-50%, -50%) rotate(20deg);
+      animation: spin1 6s linear infinite;
+    }
+
+    .orbit2 {
+      width: 250px;
+      height: 100px;
+      transform: translate(-50%, -50%) rotate(80deg);
+      animation: spin2 8s linear infinite;
+    }
+
+    .orbit3 {
+      width: 250px;
+      height: 100px;
+      transform: translate(-50%, -50%) rotate(140deg);
+      animation: spin3 10s linear infinite;
+    }
+
+    @keyframes spin1 {
+      from { transform: translate(-50%, -50%) rotate(20deg) rotateZ(0deg); }
+      to { transform: translate(-50%, -50%) rotate(20deg) rotateZ(360deg); }
+    }
+
+    @keyframes spin2 {
+      from { transform: translate(-50%, -50%) rotate(80deg) rotateZ(0deg); }
+      to { transform: translate(-50%, -50%) rotate(80deg) rotateZ(360deg); }
+    }
+
+    @keyframes spin3 {
+      from { transform: translate(-50%, -50%) rotate(140deg) rotateZ(0deg); }
+      to { transform: translate(-50%, -50%) rotate(140deg) rotateZ(360deg); }
+    }
+
+    section {
+      padding: 80px 60px;
+      position: relative;
+      z-index: 2;
+    }
+
+    section h2 {
+      font-size: 40px;
+      margin-bottom: 30px;
+      text-align: center;
+      color: #00e5ff;
+      text-shadow: 0 0 10px rgba(0, 229, 255, 0.3);
+    }
+
+    .subject-grid, .book-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 25px;
+    }
+
+    .subject-card, .book-card {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(0, 229, 255, 0.2);
+      padding: 25px;
+      border-radius: 20px;
+      backdrop-filter: blur(8px);
+      transition: 0.3s;
+    }
+
+    .subject-card:hover, .book-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 0 20px rgba(0, 229, 255, 0.2);
+    }
+
+    .subject-card h3, .book-card h3 {
+      margin-bottom: 12px;
+      color: #ffffff;
+    }
+
+    .subject-card p, .book-card p {
+      color: #d9e6ff;
+      line-height: 1.6;
+      margin-bottom: 8px;
+    }
+
+    .book-card img {
+      width: 100%;
+      height: 250px;
+      object-fit: cover;
+      border-radius: 14px;
+      margin-bottom: 15px;
+    }
+
+    .price {
+      color: #00ffb3;
+      font-weight: bold;
+      margin: 10px 0;
+      font-size: 18px;
+    }
+
+    .book-buttons {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .about p, .contact p {
+      max-width: 1000px;
+      margin: 0 auto 14px;
+      text-align: center;
+      font-size: 18px;
+      color: #d9e6ff;
+      line-height: 1.8;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 25px;
+      background: rgba(0, 0, 0, 0.4);
+      color: #bbb;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 5000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(5px);
+      padding: 20px;
+    }
+
+    .modal-content {
+      background: rgba(8, 14, 35, 0.95);
+      border: 1px solid rgba(0, 229, 255, 0.25);
+      max-width: 450px;
+      margin: 80px auto;
+      padding: 30px;
+      border-radius: 20px;
+      position: relative;
+      box-shadow: 0 0 30px rgba(0, 229, 255, 0.15);
+    }
+
+    .modal-content h3 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #00e5ff;
+      font-size: 28px;
+    }
+
+    .close {
+      position: absolute;
+      right: 18px;
+      top: 12px;
+      font-size: 28px;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .modal-content input, .modal-content select {
+      width: 100%;
+      padding: 14px;
+      margin-bottom: 15px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.08);
+      color: white;
+      font-size: 15px;
+    }
+
+    .modal-content input::placeholder {
+      color: #cfd8ff;
+    }
+
+    .modal-content select option {
+      color: black;
+    }
+
+    .full-btn {
+      width: 100%;
+      padding: 14px;
+      border-radius: 14px;
+      border: none;
+      background: linear-gradient(45deg, #00e5ff, #7c4dff);
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .note {
+      font-size: 13px;
+      color: #9ecbff;
+      margin-top: 8px;
+      text-align: center;
+    }
+
+    @media (max-width: 992px) {
+      .hero {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .hero-content h1 {
+        font-size: 48px;
+      }
+
+      .hero-buttons {
+        justify-content: center;
+      }
+
+      .navbar {
+        gap: 10px;
+      }
+
+      .atom-animation {
+        margin-right: 0;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .header {
+        padding: 15px 20px;
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .hero {
+        padding: 150px 20px 40px;
+      }
+
+      section {
+        padding: 60px 20px;
+      }
+
+      .hero-content h1 {
+        font-size: 36px;
+      }
+
+      .logo-text {
+        font-size: 18px;
+      }
+
+      .navbar {
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="overlay"></div>
+
+  <header class="header">
+    <div class="logo">
+      <span class="logo-icon">⚛</span>
+      <span class="logo-text">Amanas Quantum</span>
+    </div>
+
+    <nav class="navbar">
+      <a href="#home">Home</a>
+      <a href="#subjects">Subjects</a>
+      <a href="#books">Books</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+      <button class="btn login-btn" onclick="openModal('loginModal')">Login</button>
+      <button class="btn register-btn" onclick="openModal('registerModal')">Register</button>
+    </nav>
+  </header>
+
+  <section class="hero" id="home">
+    <div class="hero-content">
+      <h1>BUILD YOUR <br> SCIENCE FOUNDATION</h1>
+      <p>
+        Explore the universe of science with Quantum Physics, Astrobiology, Chemistry,
+        and powerful learning resources designed for future scientists.
+      </p>
+      <div class="hero-buttons">
+        <a href="#subjects" class="btn primary-btn">Start Learning</a>
+        <a href="#books" class="btn secondary-btn">View Books</a>
+      </div>
+    </div>
+
+    <div class="atom-animation">
+      <div class="orbit orbit1"></div>
+      <div class="orbit orbit2"></div>
+      <div class="orbit orbit3"></div>
+      <div class="nucleus"></div>
+    </div>
+  </section>
+
+  <section class="subjects" id="subjects">
+    <h2>Our Science Subjects</h2>
+    <div class="subject-grid">
+      <div class="subject-card">
+        <h3>Quantum Physics</h3>
+        <p>Learn particles, wave functions, quantum mechanics, and the mysteries of the universe.</p>
+      </div>
+      <div class="subject-card">
+        <h3>Astrobiology</h3>
+        <p>Study life in the universe, exoplanets, space environments, and cosmic evolution.</p>
+      </div>
+      <div class="subject-card">
+        <h3>Chemistry</h3>
+        <p>Discover atoms, molecules, reactions, and advanced chemical science concepts.</p>
+      </div>
+      <div class="subject-card">
+        <h3>Biotechnology</h3>
+        <p>Explore modern biology, genetics, DNA science, and future scientific innovation.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="books" id="books">
+    <h2>Featured Quantum Books</h2>
+    <div class="book-grid">
+
+      <div class="book-card">
+        <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=700&q=80" alt="Nexus Book">
+        <h3>Nexus: A Quantum Theory of Space-Time Gravity</h3>
+        <p><strong>Subject:</strong> Quantum Gravity / Space-Time</p>
+        <p class="price">Price: 1,500 ETB</p>
+        <div class="book-buttons">
+          <a href="books/nexus.pdf" target="_blank" class="btn primary-btn">Read PDF</a>
+          <button class="btn register-btn" onclick="openOrder('Nexus: A Quantum Theory of Space-Time Gravity', 'Quantum Gravity / Space-Time', '1,500 ETB')">Order Book</button>
+        </div>
+      </div>
+
+      <div class="book-card">
+        <img src="https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=700&q=80" alt="Carroll Book">
+        <h3>Carroll SG</h3>
+        <p><strong>Subject:</strong> Relativity / Quantum Space</p>
+        <p class="price">Price: 1,200 ETB</p>
+        <div class="book-buttons">
+          <a href="books/carroll.pdf" target="_blank" class="btn primary-btn">Read PDF</a>
+          <button class="btn register-btn" onclick="openOrder('Carroll SG', 'Relativity / Quantum Space', '1,200 ETB')">Order Book</button>
+        </div>
+      </div>
+
+      <div class="book-card">
+        <img src="https://images.unsplash.com/photo-1541963463532-d68292c34b19?auto=format&fit=crop&w=700&q=80" alt="Bojowald Book">
+        <h3>Bojowald 2012 J. Phys. Conf. Ser.</h3>
+        <p><strong>Subject:</strong> Quantum Cosmology</p>
+        <p class="price">Price: 1,000 ETB</p>
+        <div class="book-buttons">
+          <a href="books/bojowald.pdf" target="_blank" class="btn primary-btn">Read PDF</a>
+          <button class="btn register-btn" onclick="openOrder('Bojowald 2012 J. Phys. Conf. Ser.', 'Quantum Cosmology', '1,000 ETB')">Order Book</button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="about" id="about">
+    <h2>About Amanas Quantum</h2>
+    <p>In summary, quantum computing stands poised to redefine the boundaries of human innovation.</p>
+    <p>From unbreakable encryption to drug discovery in hours, its potential is limitless.</p>
+    <p>Yet, challenges like error correction and scalability remain our next frontiers.</p>
+    <p>By harnessing quantum supremacy, we unlock solutions to problems once deemed impossible.</p>
+    <p>Your journey into this quantum realm starts here—explore, experiment, and innovate.</p>
+    <p>Join the quantum revolution today and shape tomorrow's world.</p>
+    <p><strong>The future is quantum; the time is now.</strong></p>
+  </section>
+
+  <section class="contact" id="contact">
+    <h2>Contact Us</h2>
+    <p>Email: amanebro3@gmail.com</p>
+    <p>Phone: +251910894712</p>
+  </section>
+
+  <footer class="footer">
+    <p>© 2026 Amanas Quantum | Designed by Amanuel</p>
+  </footer>
+
+  <!-- LOGIN MODAL -->
+  <div id="loginModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('loginModal')">&times;</span>
+      <h3>Login</h3>
+      <input type="email" id="loginEmail" placeholder="Enter your email">
+      <input type="password" id="loginPassword" placeholder="Enter your password">
+      <button class="full-btn" onclick="loginUser()">Login</button>
+      <p class="note">Secure login connected without displaying credentials in the page.</p>
+    </div>
+  </div>
+
+  <!-- REGISTER / ORDER MODAL -->
+  <div id="registerModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('registerModal')">&times;</span>
+      <h3>Register / Book Order</h3>
+      <input type="text" id="regName" placeholder="Full Name">
+      <input type="email" id="regEmail" placeholder="Email Address">
+      <input type="text" id="regPhone" placeholder="Phone Number">
+      <input type="text" id="bookTitle" placeholder="Book Title">
+      <input type="text" id="bookSubject" placeholder="Subject">
+      <input type="text" id="bookPrice" placeholder="Price">
+      <button class="full-btn" onclick="registerOrder()">Submit Order</button>
+      <p class="note">Register your information and book order details here.</p>
+    </div>
+  </div>
+
+  <script>
+    // Modal functions
+    function openModal(id) {
+      document.getElementById(id).style.display = "block";
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).style.display = "none";
+    }
+
+    window.onclick = function(event) {
+      const loginModal = document.getElementById("loginModal");
+      const registerModal = document.getElementById("registerModal");
+
+      if (event.target === loginModal) {
+        loginModal.style.display = "none";
+      }
+      if (event.target === registerModal) {
+        registerModal.style.display = "none";
+      }
+    }
+
+    // Header scroll effect
+    window.addEventListener("scroll", () => {
+      const header = document.querySelector(".header");
+      if (window.scrollY > 50) {
+        header.style.background = "rgba(0, 0, 0, 0.55)";
+      } else {
+        header.style.background = "rgba(0, 0, 0, 0.25)";
+      }
+    });
+
+    // Secure login simulation (credentials NOT shown in page)
+    function loginUser() {
+      const email = document.getElementById("loginEmail").value.trim();
+      const password = document.getElementById("loginPassword").value.trim();
+
+      // This is intentionally placeholder validation only
+      // Real secure authentication should be done on a backend/server
+      if (email !== "" && password !== "") {
+        alert("Login successful!");
+        closeModal('loginModal');
+      } else {
+        alert("Please enter email and password.");
+      }
+    }
+
+    // Open register/order form pre-filled
+    function openOrder(title, subject, price) {
+      document.getElementById("bookTitle").value = title;
+      document.getElementById("bookSubject").value = subject;
+      document.getElementById("bookPrice").value = price;
+      openModal('registerModal');
+    }
+
+    // Register / Order submit
+    function registerOrder() {
+      const name = document.getElementById("regName").value.trim();
+      const email = document.getElementById("regEmail").value.trim();
+      const phone = document.getElementById("regPhone").value.trim();
+      const title = document.getElementById("bookTitle").value.trim();
+      const subject = document.getElementById("bookSubject").value.trim();
+      const price = document.getElementById("bookPrice").value.trim();
+
+      if (name && email && phone && title && subject && price) {
+        alert("Order submitted successfully for: " + title);
+        closeModal('registerModal');
+      } else {
+        alert("Please fill all fields.");
+      }
+    }
+  </script>
+
+</body>
+</html>
